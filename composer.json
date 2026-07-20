@@ -1,6 +1,6 @@
 {
     "name": "shamimstack/breach-php",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Enterprise-grade password breach detection for PHP 8.4+ and Laravel 13+ using the Have I Been Pwned (HIBP) k-Anonymity API.",
     "type": "library",
     "license": "MIT",
