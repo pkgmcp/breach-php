@@ -2,11 +2,11 @@
 
 > **Enterprise-grade password breach detection for PHP 8.4+ and Laravel 13+ using the Have I Been Pwned (HIBP) k-Anonymity API.**
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.4+-777BB4.svg)](#)
-[![Laravel](https://img.shields.io/badge/Laravel-13+-FF2D20.svg)](#)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-[![Tests](https://img.shields.io/badge/tests-Passing-brightgreen.svg)](#)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](#)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4+-777BB4.svg)](https://www.php.net/releases/8.4/en.php)
+[![Laravel](https://img.shields.io/badge/Laravel-13+-FF2D20.svg)](https://laravel.com)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
+[![Tests](https://github.com/shamimstack/breach-php/actions/workflows/tests.yml/badge.svg)](https://github.com/shamimstack/breach-php/actions)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/shamimstack/breach-php)](https://packagist.org/packages/shamimstack/breach-php)
 
 ---
 
@@ -75,6 +75,8 @@ BreachPHP goes further by providing:
 composer require shamimstack/breach-php
 ```
 
+The package automatically includes `php-http/guzzle7-adapter` for HTTP communication with the HIBP API — no additional HTTP client setup is required.
+
 Publish the configuration file:
 
 ```bash
@@ -92,6 +94,26 @@ Run migrations:
 ```bash
 php artisan migrate
 ```
+
+---
+
+# Configuration
+
+All configuration options can be set via `.env` variables or by publishing and editing `config/breach.php`:
+
+| Key | Default | Env Variable | Description |
+|---|---|---|---|
+| `provider` | `"hibp"` | `BREACH_PROVIDER` | Breach data source |
+| `storage` | `"database"` | `BREACH_STORAGE` | Storage driver: `"database"`, `"sqlite"`, `"none"` |
+| `cache` | `"array"` | `BREACH_CACHE` | Cache driver: `"array"`, `"redis"`, `"psr16"`, `"laravel"` |
+| `timeout` | `10` | `BREACH_TIMEOUT` | HTTP request timeout (seconds) |
+| `connect_timeout` | `5` | `BREACH_CONNECT_TIMEOUT` | HTTP connect timeout (seconds) |
+| `retries` | `3` | `BREACH_RETRIES` | Number of HTTP retries |
+| `retry_delay` | `250` | `BREACH_RETRY_DELAY` | Delay between retries (milliseconds) |
+| `store_prefixes` | `true` | `BREACH_STORE_PREFIXES` | Auto-store prefix responses locally |
+| `table_prefix` | `"breachphp_"` | `BREACH_TABLE_PREFIX` | Database table name prefix |
+| `queue.enabled` | `false` | `BREACH_QUEUE_ENABLED` | Enable Laravel queue support |
+| `queue.connection` | env `QUEUE_CONNECTION` | `BREACH_QUEUE_CONNECTION` | Queue connection name |
 
 ---
 
@@ -113,8 +135,23 @@ if ($result->isBreached()) {
 
 ```php
 use ShamimStack\BreachPHP\BreachPHP;
+use ShamimStack\BreachPHP\Services\PasswordChecker;
+use ShamimStack\BreachPHP\Providers\HibpProvider;
+use ShamimStack\BreachPHP\Http\HttpClient;
+use ShamimStack\BreachPHP\Http\RequestFactory;
+use ShamimStack\BreachPHP\Hash\Sha1Hasher;
+use ShamimStack\BreachPHP\Parsers\HibpParser;
+use Http\Discovery\Psr18ClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 
-$checker = new BreachPHP();
+$client = Psr18ClientDiscovery::find();
+$requestFactory = new RequestFactory(Psr17FactoryDiscovery::findRequestFactory());
+$httpClient = new HttpClient($client, $requestFactory);
+
+$checker = new PasswordChecker(
+    provider: new HibpProvider($httpClient, new HibpParser()),
+    hasher: new Sha1Hasher(),
+);
 
 $result = $checker->check('password123');
 
@@ -273,15 +310,19 @@ php artisan breach:prune
 
 # Storage Drivers
 
-Supported drivers include:
+Supported storage drivers include:
 
-* MySQL
-* MariaDB
+* MySQL / MariaDB
 * PostgreSQL
 * SQLite
+* None (in-memory only)
+
+# Cache Drivers
+
+* Array (default, no persistence)
 * Redis
+* PSR-16
 * Laravel Cache
-* PSR Cache
 
 ---
 
