@@ -1,0 +1,19 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    paths:
+        - src
+    level: max
+    treatPhpDocTypesAsCertain: false
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        -
+            identifier: return.phpDocType
+            message: '#Function ShamimStack\\\\BreachPHP\\\\#'
+        -
+            identifier: missingType.iterableValue
+            message: '#Cannot access offset on object#'

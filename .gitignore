@@ -1,0 +1,76 @@
+# Editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.project
+.buildpath
+.settings/
+nbproject/
+.vscode/
+.cursor/
+.cursorrules
+.windsurfrules
+
+# Composer
+/vendor/
+composer.lock
+
+# Node
+/node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Build
+/build/
+/dist/
+
+# Testing
+.phpunit.cache/
+.phpunit.result.cache
+.phpstan.cache
+.php-cs-fixer.cache
+coverage/
+build/
+infection.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.buildpath
+.settings/
+nbproject/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment
+.env
+.env.local
+.env.backup
+.env.production
+
+# Logs
+*.log
+logs/
+
+# Cache
+/cache/
+/bootstrap/cache/
+
+# Temporary
+/tmp/
+/storage/
+
+# Coverage
+.clover.xml
+cobertura.xml
+clover.xml

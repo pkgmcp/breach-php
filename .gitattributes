@@ -1,0 +1,39 @@
+* text=auto eol=lf
+
+.editorconfig text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.php-cs-fixer.php text eol=lf
+CHANGELOG.md text eol=lf
+LICENSE.md text eol=lf
+README.md text eol=lf
+composer.json text eol=lf
+phpstan.neon text eol=lf
+phpunit.xml text eol=lf
+pint.json text eol=lf
+rector.php text eol=lf
+
+*.blade.php text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.php text eol=lf
+*.xml text eol=lf
+
+tests/ export-ignore
+.github/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.editorconfig export-ignore
+.php-cs-fixer.php export-ignore
+phpstan.neon export-ignore
+phpunit.xml export-ignore
+pint.json export-ignore
+rector.php export-ignore
+infection.json5 export-ignore
+build/ export-ignore
+coverage/ export-ignore
+docs/ export-ignore
+website/ export-ignore
+templates/ export-ignore
+*.md export-ignore
+

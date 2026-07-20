@@ -1,0 +1,102 @@
+{
+    "name": "shamimstack/breach-php",
+    "version": "0.1.0",
+    "description": "Enterprise-grade password breach detection for PHP 8.4+ and Laravel 13+ using the Have I Been Pwned (HIBP) k-Anonymity API.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shamim Hossain",
+            "email": "shamim@shamimstack.dev"
+        }
+    ],
+    "keywords": [
+        "password",
+        "breach",
+        "security",
+        "hibp",
+        "haveibeenpwned",
+        "k-anonymity",
+        "laravel",
+        "php"
+    ],
+    "homepage": "https://github.com/shamimstack/breach-php",
+    "support": {
+        "issues": "https://github.com/shamimstack/breach-php/issues",
+        "source": "https://github.com/shamimstack/breach-php"
+    },
+    "require": {
+        "php": "^8.4",
+        "ext-hash": "*",
+        "ext-mbstring": "*",
+        "psr/http-client": "^1.0",
+        "psr/http-message": "^1.0|^2.0",
+        "psr/simple-cache": "^1.0|^2.0|^3.0"
+    },
+    "suggest": {
+        "php-http/guzzle7-adapter": "Required for using Guzzle as HTTP client (^0.2)",
+        "php-http/curl-client": "Required for using cURL as HTTP client (^2.0)",
+        "illuminate/database": "Required for database storage driver (^13.0)",
+        "illuminate/cache": "Required for Laravel cache driver (^13.0)",
+        "illuminate/queue": "Required for queue support (^13.0)"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "guzzlehttp/psr7": "^2.0",
+        "laravel/pint": "^1.0",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShamimStack\\BreachPHP\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShamimStack\\BreachPHP\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ShamimStack\\BreachPHP\\Providers\\BreachPHPServiceProvider"
+            ],
+            "aliases": {
+                "BreachPHP": "ShamimStack\\BreachPHP\\Facades\\BreachPHP"
+            }
+        }
+    },
+    "scripts": {
+        "analyse": "phpstan analyse",
+        "test": "pest",
+        "test:unit": "pest --testsuite=Unit",
+        "test:feature": "pest --testsuite=Feature",
+        "test:integration": "pest --testsuite=Integration",
+        "format": "pint",
+        "lint": "pint --test",
+        "ci": [
+            "@format",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
