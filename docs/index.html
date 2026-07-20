@@ -1345,7 +1345,7 @@ git push origin v1.0.0</code></pre>
             }
         }
         const list = document.getElementById('searchResultsList');
-        list.innerHTML = results.length ? results.map(r => `<a href="#${r.id}" onclick="renderDoc('${r.id}'); clearSearch();" class="block p-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm" style="color: var(--text-secondary);">${r.snippet}</a>`).join('') : '<p class="text-sm" style="color: var(--text-secondary);">No results found.</p>';
+        list.innerHTML = results.length ? results.map(r => `<a href="#${r.id}" class="block p-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm search-result-link" style="color: var(--text-secondary);">${r.snippet}</a>`).join('') : '<p class="text-sm" style="color: var(--text-secondary);">No results found.</p>';
         document.getElementById('searchResults').classList.remove('hidden');
     }
 
@@ -1354,29 +1354,63 @@ git push origin v1.0.0</code></pre>
         document.getElementById('searchResults').classList.add('hidden');
     }
 
-    // Active section tracking
-    function updateActiveLink() {
-        const sections = document.querySelectorAll('.content-section h1[id]');
-        let current = '';
-        sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= 100) current = section.id;
-        });
+    // Active link tracking
+    function setActiveLink(id) {
         document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
         });
+    }
+
+    // Centralized navigation
+    function navigateTo(id) {
+        if (!docs[id]) id = 'index';
+        renderDoc(id);
+        setActiveLink(id);
+        history.replaceState(null, '', '#' + id);
+        if (document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
     }
 
     // Initialize
     initTheme();
-    renderDoc('index');
-    document.getElementById('searchInput').addEventListener('input', e => searchDocs(e.target.value));
-    window.addEventListener('scroll', updateActiveLink);
 
-    // Handle hash navigation
-    if (window.location.hash) {
-        const id = window.location.hash.slice(1);
-        if (docs[id]) renderDoc(id);
+    document.getElementById('searchInput').addEventListener('input', e => searchDocs(e.target.value));
+
+    // Sidebar click handler
+    document.getElementById('sidebarNav').addEventListener('click', function(e) {
+        var anchor = e.target.closest('a');
+        if (anchor && anchor.getAttribute('href') && anchor.getAttribute('href').charAt(0) === '#') {
+            e.preventDefault();
+            var docId = anchor.getAttribute('href').slice(1);
+            navigateTo(docId);
+        }
+    });
+
+    // Content link handler (for links inside rendered doc content)
+    document.getElementById('docContent').addEventListener('click', function(e) {
+        var anchor = e.target.closest('a');
+        if (anchor && anchor.getAttribute('href') && anchor.getAttribute('href').charAt(0) === '#') {
+            e.preventDefault();
+            var docId = anchor.getAttribute('href').slice(1);
+            navigateTo(docId);
+        }
+    });
+
+    // Search result link handler
+    document.getElementById('searchResults').addEventListener('click', function(e) {
+        var anchor = e.target.closest('a');
+        if (anchor && anchor.closest('#searchResults') && anchor.getAttribute('href') && anchor.getAttribute('href').charAt(0) === '#') {
+            e.preventDefault();
+            var docId = anchor.getAttribute('href').slice(1);
+            clearSearch();
+            navigateTo(docId);
+        }
+    });
+
+    // Handle hash navigation on load
+    if (window.location.hash && docs[window.location.hash.slice(1)]) {
+        navigateTo(window.location.hash.slice(1));
+    } else {
+        navigateTo('index');
     }
     </script>
 </body>
