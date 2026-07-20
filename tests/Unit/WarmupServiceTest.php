@@ -52,11 +52,12 @@ it('warmup skips existing prefixes', function (): void {
 });
 
 it('warmup fetches new prefixes', function (): void {
-    $responseBody = "ABC12:100\r\nDEF34:200";
-
     $providerResponse = new ProviderResponse(
-        body: $responseBody,
-        statusCode: 200,
+        prefix: '00000',
+        suffixes: [
+            ['suffix' => 'ABC12', 'count' => 100],
+            ['suffix' => 'DEF34', 'count' => 200],
+        ],
     );
 
     $provider = \Mockery::mock(ProviderInterface::class);

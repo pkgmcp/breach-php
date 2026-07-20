@@ -48,34 +48,35 @@ final class FakeHttpClient implements ClientInterface
             ) {}
 
             public function getProtocolVersion(): string { return '1.1'; }
-            public function withProtocolVersion($version): static { return $this; }
+            public function withProtocolVersion(string $version): static { return $this; }
             public function getHeaders(): array { return []; }
-            public function hasHeader($name): bool { return false; }
-            public function getHeader($name): array { return []; }
-            public function getHeaderLine($name): string { return ''; }
-            public function withHeader($name, $value): static { return $this; }
-            public function withoutHeader($name): static { return $this; }
+            public function hasHeader(string $name): bool { return false; }
+            public function getHeader(string $name): array { return []; }
+            public function getHeaderLine(string $name): string { return ''; }
+            public function withHeader(string $name, $value): static { return $this; }
+            public function withAddedHeader(string $name, $value): static { return $this; }
+            public function withoutHeader(string $name): static { return $this; }
             public function getBody(): StreamInterface { return new class($this->body) implements StreamInterface {
                 public function __construct(private readonly string $content) {}
                 public function __toString(): string { return $this->content; }
-                public function getContents(): string { return $this->content; }
-                public function getMetadata($key = null): mixed { return null; }
-                public function isReadable(): bool { return true; }
-                public function isWritable(): bool { return false; }
                 public function close(): void {}
                 public function detach() { return null; }
                 public function getSize(): ?int { return strlen($this->content); }
+                public function tell(): int { return 0; }
+                public function eof(): bool { return true; }
                 public function isSeekable(): bool { return true; }
-                public function seek($offset, $whence = SEEK_SET): void {}
+                public function seek(int $offset, int $whence = SEEK_SET): void {}
                 public function rewind(): void {}
-                public function read($length): string|false { return substr($this->content, 0, $length); }
-                public function write($string): int|false { return false; }
-                public function setContents($string): int|false { return false; }
-                public function getStream($string, $offset = 0, $whence = SEEK_SET) { return $this; }
+                public function isWritable(): bool { return false; }
+                public function write(string $string): int { return 0; }
+                public function isReadable(): bool { return true; }
+                public function read(int $length): string { return substr($this->content, 0, $length); }
+                public function getContents(): string { return $this->content; }
+                public function getMetadata(?string $key = null) { return null; }
             }; }
             public function withBody(StreamInterface $body): static { return $this; }
             public function getStatusCode(): int { return $this->statusCode; }
-            public function withStatus($code, $reasonPhrase = ''): static { return $this; }
+            public function withStatus(int $code, string $reasonPhrase = ''): static { return $this; }
             public function getReasonPhrase(): string { return ''; }
         };
     }

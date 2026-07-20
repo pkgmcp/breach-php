@@ -42,7 +42,7 @@ it('clears all values', function (): void {
 
     $cache->set('key1', 'value1', 60);
     $cache->set('key2', 'value2', 60);
-    $cache->clear();
+    $cache->flush();
 
     expect($cache->get('key1'))->toBeNull()
         ->and($cache->get('key2'))->toBeNull();

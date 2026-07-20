@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ShamimStack\BreachPHP\Providers;
 
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use Illuminate\Support\ServiceProvider;
 use ShamimStack\BreachPHP\Cache\CacheManager;
 use ShamimStack\BreachPHP\Contracts\CacheInterface;
@@ -80,6 +82,18 @@ final class BreachPHPServiceProvider extends ServiceProvider
                 parser: $app->make(ParserInterface::class),
             );
         });
+
+        if (! $this->app->bound(\Psr\Http\Client\ClientInterface::class)) {
+            $this->app->singleton(\Psr\Http\Client\ClientInterface::class, static function () {
+                return Psr18ClientDiscovery::find();
+            });
+        }
+
+        if (! $this->app->bound(\Psr\Http\Message\RequestFactoryInterface::class)) {
+            $this->app->singleton(\Psr\Http\Message\RequestFactoryInterface::class, static function () {
+                return Psr17FactoryDiscovery::find();
+            });
+        }
 
         $this->app->singleton(HttpClient::class, function ($app) {
             $config = config('breachphp', []);

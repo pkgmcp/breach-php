@@ -30,14 +30,12 @@ final class InMemoryCache implements CacheInterface
         return $item['value'];
     }
 
-    public function set(string $key, mixed $value, int $ttl = 0): bool
+    public function set(string $key, mixed $value, ?int $ttl = null): void
     {
         $this->store[$key] = [
             'value' => $value,
-            'expires_at' => $ttl > 0 ? time() + $ttl : null,
+            'expires_at' => $ttl !== null ? time() + $ttl : null,
         ];
-
-        return true;
     }
 
     public function has(string $key): bool
@@ -68,11 +66,9 @@ final class InMemoryCache implements CacheInterface
         return false;
     }
 
-    public function clear(): bool
+    public function flush(): void
     {
         $this->store = [];
-
-        return true;
     }
 
     /**

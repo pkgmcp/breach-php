@@ -28,7 +28,7 @@ final class CacheClearCommand extends Command
         $this->info('Clearing breach cache...');
 
         try {
-            $this->cache->clear();
+            $this->cache->flush();
             $this->info('Cache cleared successfully.');
 
             if ($this->option('json')) {

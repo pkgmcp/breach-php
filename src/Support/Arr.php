@@ -146,7 +146,7 @@ final class Arr
      * @param  array<int, mixed>  $array
      * @return array<int, mixed>
      */
-    public static function flatten(array $array, int $depth = INF): array
+    public static function flatten(array $array, int $depth = PHP_INT_MAX): array
     {
         $result = [];
 
@@ -218,7 +218,7 @@ final class Arr
     /**
      * Determine if the given value is an array.
      */
-    public static function is array(mixed $value): bool
+    public static function isArray(mixed $value): bool
     {
         return is_array($value);
     }

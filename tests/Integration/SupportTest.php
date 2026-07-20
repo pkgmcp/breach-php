@@ -97,7 +97,7 @@ it('filters collection', function (): void {
 
     $filtered = $collection->filter(fn ($item) => $item > 3);
 
-    expect($filtered->all())->toBe([4, 5]);
+    expect($filtered->all())->toBe([3 => 4, 4 => 5]);
 });
 
 it('maps collection', function (): void {

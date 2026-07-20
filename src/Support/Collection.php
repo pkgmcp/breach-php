@@ -55,12 +55,20 @@ final class Collection implements \IteratorAggregate, \Countable
     }
 
     /**
+     * Check if the collection is empty.
+     */
+    public function isEmpty(): bool
+    {
+        return $this->items === [];
+    }
+
+    /**
      * Get the first item.
      */
     public function first(?callable $callback = null, mixed $default = null): mixed
     {
         if ($callback === null) {
-            return reset($this->items) ?: $default;
+            return $this->items[0] ?? $default;
         }
 
         foreach ($this->items as $key => $value) {
@@ -78,7 +86,7 @@ final class Collection implements \IteratorAggregate, \Countable
     public function last(?callable $callback = null, mixed $default = null): mixed
     {
         if ($callback === null) {
-            return end($this->items) ?: $default;
+            return $this->items[array_key_last($this->items)] ?? $default;
         }
 
         $result = $default;
@@ -201,7 +209,7 @@ final class Collection implements \IteratorAggregate, \Countable
             $bValue = is_array($b) ? ($b[$key] ?? null) : $b->{$key} ?? null;
 
             return $direction === SORT_ASC
-                ? <=> $bValue
+                ? $aValue <=> $bValue
                 : $bValue <=> $aValue;
         });
 

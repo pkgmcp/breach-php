@@ -11,7 +11,7 @@ use ShamimStack\BreachPHP\Exceptions\StorageException;
 use ShamimStack\BreachPHP\Exceptions\TimeoutException;
 
 it('creates breach exception', function (): void {
-    $exception = new BreachException('Test error');
+    $exception = new ApiException('Test error');
 
     expect($exception->getMessage())->toBe('Test error')
         ->and($exception)->toBeInstanceOf(\Exception::class);

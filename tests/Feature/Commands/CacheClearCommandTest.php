@@ -6,7 +6,7 @@ use Illuminate\Database\ConnectionInterface;
 
 it('runs cache-clear command successfully', function (): void {
     $cache = \Mockery::mock(\ShamimStack\BreachPHP\Contracts\CacheInterface::class);
-    $cache->shouldReceive('clear')->andReturn(true);
+    $cache->shouldReceive('flush')->once();
 
     $this->app->instance(\ShamimStack\BreachPHP\Contracts\CacheInterface::class, $cache);
 
@@ -18,7 +18,7 @@ it('runs cache-clear command successfully', function (): void {
 
 it('runs cache-clear command handles errors', function (): void {
     $cache = \Mockery::mock(\ShamimStack\BreachPHP\Contracts\CacheInterface::class);
-    $cache->shouldReceive('clear')->andThrow(new \RuntimeException('Connection failed'));
+    $cache->shouldReceive('flush')->andThrow(new \RuntimeException('Connection failed'));
 
     $this->app->instance(\ShamimStack\BreachPHP\Contracts\CacheInterface::class, $cache);
 

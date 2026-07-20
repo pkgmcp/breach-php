@@ -20,10 +20,10 @@ final class ArrayCache implements CacheInterface
     /**
      * Retrieve a value from the cache by key.
      */
-    public function get(string $key): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         if (! isset($this->store[$key])) {
-            return null;
+            return $default;
         }
 
         $item = $this->store[$key];
@@ -31,7 +31,7 @@ final class ArrayCache implements CacheInterface
         if ($item['expiry'] !== null && $item['expiry'] < time()) {
             unset($this->store[$key]);
 
-            return null;
+            return $default;
         }
 
         return $item['value'];
