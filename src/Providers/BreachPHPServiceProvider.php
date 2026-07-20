@@ -91,7 +91,7 @@ final class BreachPHPServiceProvider extends ServiceProvider
 
         if (! $this->app->bound(\Psr\Http\Message\RequestFactoryInterface::class)) {
             $this->app->singleton(\Psr\Http\Message\RequestFactoryInterface::class, static function () {
-                return Psr17FactoryDiscovery::find();
+                return Psr17FactoryDiscovery::findRequestFactory();
             });
         }
 

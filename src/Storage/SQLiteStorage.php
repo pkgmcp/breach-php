@@ -202,9 +202,9 @@ final class SQLiteStorage implements StorageInterface
     private function getDatabaseSize(): ?string
     {
         try {
-            $databasePath = $this->connection->getDatabasePath();
+            $databasePath = $this->connection->getConfig('database');
 
-            if (! file_exists($databasePath)) {
+            if (! is_string($databasePath) || ! file_exists($databasePath)) {
                 return null;
             }
 

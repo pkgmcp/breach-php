@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace ShamimStack\BreachPHP\Storage;
 
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use ShamimStack\BreachPHP\Contracts\StorageInterface;
 use ShamimStack\BreachPHP\DTO\PrefixResponse;
 use ShamimStack\BreachPHP\DTO\StorageStatistics;
-use ShamimStack\BreachPHP\Models\Prefix;
-use ShamimStack\BreachPHP\Models\Suffix;
 
 /**
  * Database storage driver for breach prefix data.
@@ -69,27 +67,30 @@ final class DatabaseStorage implements StorageInterface
             $prefix = strtoupper($response->prefix());
 
             // Find or create the prefix
-            $prefixModel = $this->prefixQuery()
+            $prefixId = $this->prefixQuery()
                 ->where('prefix', $prefix)
-                ->first();
+                ->value('id');
 
-            if ($prefixModel === null) {
-                $prefixModel = $this->prefixQuery()->create([
+            if ($prefixId === null) {
+                $this->prefixQuery()->insert([
                     'prefix' => $prefix,
                     'synced_at' => now(),
                 ]);
+                $prefixId = $this->connection->getPdo()->lastInsertId();
             } else {
-                $prefixModel->update(['synced_at' => now()]);
+                $this->prefixQuery()
+                    ->where('id', $prefixId)
+                    ->update(['synced_at' => now()]);
             }
 
             // Delete existing suffixes for this prefix
             $this->suffixQuery()
-                ->where('prefix_id', $prefixModel->id)
+                ->where('prefix_id', $prefixId)
                 ->delete();
 
             // Insert new suffixes in batches
             $suffixes = array_map(fn (array $record) => [
-                'prefix_id' => $prefixModel->id,
+                'prefix_id' => $prefixId,
                 'suffix' => strtoupper($record['suffix']),
                 'count' => $record['count'],
                 'created_at' => now(),
@@ -108,16 +109,18 @@ final class DatabaseStorage implements StorageInterface
     public function deletePrefix(string $prefix): void
     {
         $this->connection->transaction(function () use ($prefix) {
-            $prefixModel = $this->prefixQuery()
+            $prefixId = $this->prefixQuery()
                 ->where('prefix', strtoupper($prefix))
-                ->first();
+                ->value('id');
 
-            if ($prefixModel !== null) {
+            if ($prefixId !== null) {
                 $this->suffixQuery()
-                    ->where('prefix_id', $prefixModel->id)
+                    ->where('prefix_id', $prefixId)
                     ->delete();
 
-                $prefixModel->delete();
+                $this->prefixQuery()
+                    ->where('id', $prefixId)
+                    ->delete();
             }
         });
     }
@@ -145,7 +148,7 @@ final class DatabaseStorage implements StorageInterface
      */
     private function prefixQuery(): Builder
     {
-        return Prefix::on($this->connection)->setTable($this->prefixesTable);
+        return $this->connection->table($this->prefixesTable);
     }
 
     /**
@@ -153,7 +156,7 @@ final class DatabaseStorage implements StorageInterface
      */
     private function suffixQuery(): Builder
     {
-        return Suffix::on($this->connection)->setTable($this->suffixesTable);
+        return $this->connection->table($this->suffixesTable);
     }
 
     /**
@@ -190,9 +193,9 @@ final class DatabaseStorage implements StorageInterface
      */
     private function getSqliteSize(): ?string
     {
-        $databasePath = $this->connection->getDatabasePath();
+        $databasePath = $this->connection->getConfig('database');
 
-        if (! file_exists($databasePath)) {
+        if (! is_string($databasePath) || ! file_exists($databasePath)) {
             return null;
         }
 
