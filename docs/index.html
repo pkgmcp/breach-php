@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BreachPHP Documentation</title>
+    <meta name="description" content="Enterprise-grade password breach detection for PHP 8.4+ and Laravel 13+">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/env.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/markdown.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        accent: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-sidebar: #f1f5f9;
+            --text-primary: #09090b;
+            --text-secondary: #71717a;
+            --accent: #10b981;
+            --border: #e4e4e7;
+            --code-bg: #1e1e2e;
+        }
+        .dark {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-sidebar: #131316;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --accent: #34d399;
+            --border: #27272a;
+            --code-bg: #0d1117;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar {
+            background: var(--bg-sidebar);
+            border-color: var(--border);
+        }
+        .sidebar-link {
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            color: var(--accent);
+            background: rgba(16, 185, 129, 0.08);
+        }
+        .dark .sidebar-link:hover, .dark .sidebar-link.active {
+            background: rgba(52, 211, 153, 0.1);
+        }
+        .content-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .content-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        .content-section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: var(--text-secondary);
+        }
+        .content-section ul, .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+        .content-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        .content-section ul li { list-style-type: disc; }
+        .content-section ol li { list-style-type: decimal; }
+        .content-section a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .content-section a:hover {
+            opacity: 0.8;
+        }
+        .content-section strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .content-section code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875em;
+            background: var(--code-bg);
+            color: #e879f9;
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+        }
+        .content-section pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        .content-section pre code {
+            background: none;
+            color: #e2e8f0;
+            padding: 0;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .content-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        .content-section th, .content-section td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .content-section th {
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+        .content-section td {
+            color: var(--text-secondary);
+        }
+        .content-section hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+        .content-section blockquote {
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .search-highlight {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 2px;
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; height: 100vh; width: 280px; transition: transform 0.3s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+            .sidebar-overlay.open { display: block; }
+        }
+        @media print {
+            .sidebar, .header, .mobile-menu-btn, .search-container { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .content-section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-30 h-16 flex items-center px-4 md:px-6 border-b" style="background: var(--bg-primary); border-color: var(--border);">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSidebar()" class="mobile-menu-btn md:hidden p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <a href="#" class="flex items-center gap-2 font-semibold text-lg" style="color: var(--text-primary);">
+                <svg class="w-6 h-6 text-accent-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                BreachPHP
+            </a>
+            <span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-accent-100 text-accent-700 dark:bg-accent-900/30 dark:text-accent-400 font-medium">v0.1.0</span>
+        </div>
+        <div class="ml-auto flex items-center gap-3">
+            <div class="search-container relative hidden sm:block">
+                <input type="text" id="searchInput" placeholder="Search docs..." class="w-64 pl-9 pr-3 py-2 text-sm rounded-lg border bg-transparent outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500" style="border-color: var(--border); color: var(--text-primary);">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color: var(--text-secondary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" title="Toggle dark mode">
+                <svg id="sunIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <svg id="moonIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+            <a href="https://github.com/pkgmcp/breach-php" target="_blank" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" title="GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar fixed top-16 left-0 bottom-0 w-72 overflow-y-auto border-r py-4 px-3">
+        <nav class="space-y-1" id="sidebarNav">
+            <div class="mb-4">
+                <button onclick="toggleSection(this)" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                    Getting Started
+                    <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="section-items mt-1 space-y-0.5">
+                    <a href="#installation" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Installation</a>
+                    <a href="#quick-start" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Quick Start</a>
+                    <a href="#configuration" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Configuration</a>
+                    <a href="#usage" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Usage</a>
+                    <a href="#upgrade" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Upgrade Guide</a>
+                </div>
+            </div>
+            <div class="mb-4">
+                <button onclick="toggleSection(this)" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                    Core Concepts
+                    <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="section-items mt-1 space-y-0.5">
+                    <a href="#architecture" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Architecture</a>
+                    <a href="#providers" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Providers</a>
+                    <a href="#storage" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Storage</a>
+                    <a href="#offline-engine" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Offline Engine</a>
+                    <a href="#database" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Database</a>
+                    <a href="#validation" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Validation</a>
+                    <a href="#events" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Events</a>
+                </div>
+            </div>
+            <div class="mb-4">
+                <button onclick="toggleSection(this)" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                    Reference
+                    <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="section-items mt-1 space-y-0.5">
+                    <a href="#api" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">API Reference</a>
+                    <a href="#commands" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Commands</a>
+                    <a href="#faq" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">FAQ</a>
+                </div>
+            </div>
+            <div class="mb-4">
+                <button onclick="toggleSection(this)" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                    Development
+                    <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="section-items mt-1 space-y-0.5">
+                    <a href="#development" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Development Guide</a>
+                    <a href="#testing" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Testing</a>
+                    <a href="#style-guide" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Style Guide</a>
+                    <a href="#project-structure" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Project Structure</a>
+                    <a href="#release" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Release Process</a>
+                </div>
+            </div>
+            <div class="mb-4">
+                <button onclick="toggleSection(this)" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                    Meta
+                    <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="section-items mt-1 space-y-0.5">
+                    <a href="#roadmap" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Roadmap</a>
+                    <a href="#getting-help" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">Getting Help</a>
+                    <a href="#ai-rules" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">AI Rules</a>
+                    <a href="#prd" class="sidebar-link block px-3 py-1.5 text-sm rounded-md">PRD</a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content md:ml-72 pt-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div id="searchResults" class="hidden mb-6 p-4 rounded-lg border" style="background: var(--bg-secondary); border-color: var(--border);">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium" style="color: var(--text-primary);">Search Results</span>
+                    <button onclick="clearSearch()" class="text-xs" style="color: var(--text-secondary);">Clear</button>
+                </div>
+                <div id="searchResultsList" class="space-y-2"></div>
+            </div>
+
+            <article class="content-section" id="docContent">
+                <!-- Content will be loaded by JavaScript -->
+            </article>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t py-8 px-4 text-center text-sm" style="border-color: var(--border); color: var(--text-secondary);">
+            <p>BreachPHP v0.1.0 &middot; MIT License &middot; <a href="https://github.com/pkgmcp/breach-php" class="underline" style="color: var(--accent);">GitHub</a></p>
+        </footer>
+    </main>
+
+    <script>
+    // Documentation content
+    const docs = {
+        'index': `<h1>Documentation</h1>
+<p>Welcome to the <strong>BreachPHP</strong> documentation.</p>
+<p>BreachPHP is an enterprise-grade password breach detection package for PHP 8.4+ and Laravel 13+ using the Have I Been Pwned (HIBP) k-Anonymity API.</p>
+<hr>
+<h2>Getting Started</h2>
+<p>Start here if you're new to BreachPHP.</p>
+<table><thead><tr><th>Document</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="#installation">Installation</a></td><td>Install and configure BreachPHP in Laravel or pure PHP.</td></tr>
+<tr><td><a href="#quick-start">Quick Start</a></td><td>Check your first password in under 5 minutes.</td></tr>
+<tr><td><a href="#configuration">Configuration</a></td><td>Customize providers, storage, cache, timeouts, and queues.</td></tr>
+<tr><td><a href="#usage">Usage</a></td><td>Learn the complete public API with examples.</td></tr>
+<tr><td><a href="#upgrade">Upgrade Guide</a></td><td>Safely upgrade between releases.</td></tr>
+</tbody></table>
+<hr>
+<h2>Core Concepts</h2>
+<p>Understand how BreachPHP works under the hood.</p>
+<table><thead><tr><th>Document</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="#architecture">Architecture</a></td><td>Clean Architecture, SOLID principles, and design decisions.</td></tr>
+<tr><td><a href="#providers">Providers</a></td><td>How external breach data providers are integrated.</td></tr>
+<tr><td><a href="#storage">Storage</a></td><td>Storage abstraction layer for persisting breach data.</td></tr>
+<tr><td><a href="#offline-engine">Offline Engine</a></td><td>Build a local breach database through synchronization.</td></tr>
+<tr><td><a href="#database">Database</a></td><td>Database schema, migrations, and indexing strategy.</td></tr>
+<tr><td><a href="#validation">Validation</a></td><td>Laravel validation rules for breached password detection.</td></tr>
+<tr><td><a href="#events">Events</a></td><td>Event-driven architecture and lifecycle hooks.</td></tr>
+</tbody></table>
+<hr>
+<h2>Reference</h2>
+<p>Quick lookup for APIs, commands, and common questions.</p>
+<table><thead><tr><th>Document</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="#api">API Reference</a></td><td>Complete public API for Laravel and pure PHP.</td></tr>
+<tr><td><a href="#commands">Commands</a></td><td>All 11 Artisan commands for maintenance and sync.</td></tr>
+<tr><td><a href="#faq">FAQ</a></td><td>Frequently asked questions and troubleshooting.</td></tr>
+</tbody></table>
+<hr>
+<h2>Development</h2>
+<p>Contributing to BreachPHP or extending its functionality.</p>
+<table><thead><tr><th>Document</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="#development">Development Guide</a></td><td>Workflow, coding standards, and contribution process.</td></tr>
+<tr><td><a href="#testing">Testing</a></td><td>Test strategy, Pest, PHPStan, and mutation testing.</td></tr>
+<tr><td><a href="#style-guide">Style Guide</a></td><td>Coding, naming, and documentation standards.</td></tr>
+<tr><td><a href="#project-structure">Project Structure</a></td><td>Official directory layout and responsibilities.</td></tr>
+<tr><td><a href="#release">Release Process</a></td><td>SemVer, testing, and reproducible builds.</td></tr>
+</tbody></table>
+<hr>
+<h2>Meta</h2>
+<p>Project-level documentation and governance.</p>
+<table><thead><tr><th>Document</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="#roadmap">Roadmap</a></td><td>Planned features, milestones, and future direction.</td></tr>
+<tr><td><a href="#getting-help">Getting Help</a></td><td>How to get help, report issues, and request features.</td></tr>
+<tr><td><a href="#ai-rules">AI Rules</a></td><td>Mandatory rules for AI assistants contributing to the codebase.</td></tr>
+<tr><td><a href="#prd">PRD</a></td><td>Product Requirements Document defining scope and features.</td></tr>
+</tbody></table>`,
+
+        'installation': `<h1>Installation</h1>
+<p>This guide explains how to install and configure <strong>BreachPHP</strong> in both Laravel and framework-agnostic PHP applications.</p>
+<hr>
+<h2>Requirements</h2>
+<p>Before installing BreachPHP, ensure your environment meets the following requirements.</p>
+<h3>PHP</h3>
+<ul><li>PHP <strong>8.4</strong> or later</li></ul>
+<h3>Composer</h3>
+<ul><li>Latest stable version</li></ul>
+<h3>Supported Frameworks</h3>
+<ul><li>Laravel 13+</li><li>Pure PHP</li><li>Any PSR-compatible framework</li></ul>
+<hr>
+<h2>Install via Composer</h2>
+<pre><code class="language-bash">composer require shamimstack/breach-php</code></pre>
+<hr>
+<h2>Laravel Installation</h2>
+<p>Laravel supports automatic package discovery. No additional registration is required.</p>
+<p>Verify the package is installed:</p>
+<pre><code class="language-bash">php artisan about</code></pre>
+<p>or</p>
+<pre><code class="language-bash">composer show shamimstack/breach-php</code></pre>
+<hr>
+<h2>Publish Configuration</h2>
+<pre><code class="language-bash">php artisan vendor:publish --tag=breachphp-config</code></pre>
+<p>This creates: <code>config/breach.php</code></p>
+<hr>
+<h2>Publish Database Migrations</h2>
+<pre><code class="language-bash">php artisan vendor:publish --tag=breachphp-migrations</code></pre>
+<p>Run the migrations:</p>
+<pre><code class="language-bash">php artisan migrate</code></pre>
+<hr>
+<h2>Optional: Publish Everything</h2>
+<pre><code class="language-bash">php artisan vendor:publish --provider="ShamimStack\\BreachPHP\\Providers\\BreachPHPServiceProvider"</code></pre>
+<hr>
+<h2>Basic Configuration</h2>
+<pre><code class="language-php">return [
+    'provider' => 'hibp',
+    'storage' => 'database',
+    'cache' => 'array',
+    'timeout' => 10,
+    'retries' => 3,
+    'retry_delay' => 250,
+];</code></pre>
+<hr>
+<h2>Pure PHP Installation</h2>
+<pre><code class="language-php">require __DIR__.'/vendor/autoload.php';
+
+$result = breach_check('password123');
+
+if ($result->isBreached()) {
+    echo $result->count();
+}</code></pre>
+<hr>
+<h2>Verify Installation</h2>
+<pre><code class="language-bash">php artisan breach:test</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-text">✔ Package installed
+✔ Configuration loaded
+✔ HTTP client available
+✔ Storage configured
+✔ Cache configured
+✔ Provider reachable
+Installation successful.</code></pre>
+<hr>
+<h2>First Password Check</h2>
+<h3>Laravel</h3>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Facades\\BreachPHP;
+
+$result = BreachPHP::check('password123');
+
+if ($result->isBreached()) {
+    echo "Password found {$result->count()} times.";
+}</code></pre>
+<h3>Pure PHP</h3>
+<pre><code class="language-php">$result = breach_check('password123');
+
+if ($result->isBreached()) {
+    echo $result->count();
+}</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Package Not Found</h3>
+<pre><code class="language-bash">composer install
+composer dump-autoload</code></pre>
+<h3>Configuration Changes Not Applied</h3>
+<pre><code class="language-bash">php artisan optimize:clear</code></pre>
+<h3>Provider Connection Issues</h3>
+<pre><code class="language-bash">php artisan breach:doctor</code></pre>
+<hr>
+<h2>Next Steps</h2>
+<ol><li><strong>Quick Start</strong> — Perform your first password breach check.</li>
+<li><strong>Configuration</strong> — Customize providers, storage, cache, and timeouts.</li>
+<li><strong>Usage</strong> — Learn the complete API.</li>
+<li><strong>Validation</strong> — Integrate BreachPHP into Laravel validation.</li>
+<li><strong>Offline Engine</strong> — Configure local storage and synchronization.</li></ol>`,
+
+        'quick-start': `<h1>Quick Start</h1>
+<p>This guide walks you through the most common BreachPHP features in just a few minutes.</p>
+<hr>
+<h2>Before You Begin</h2>
+<ul><li>Installed BreachPHP</li><li>Published the configuration (Laravel)</li><li>Completed the installation guide</li></ul>
+<p>If you haven't installed the package yet, see <a href="#installation">Installation</a>.</p>
+<hr>
+<h2>Your First Password Check</h2>
+<h3>Laravel</h3>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Facades\\BreachPHP;
+
+$result = BreachPHP::check('password123');
+
+if ($result->isBreached()) {
+    echo "Password found {$result->count()} times.";
+} else {
+    echo "Password is not known to be breached.";
+}</code></pre>
+<h3>Pure PHP</h3>
+<pre><code class="language-php">$result = breach_check('password123');
+
+if ($result->isBreached()) {
+    echo $result->count();
+}</code></pre>
+<hr>
+<h2>Understanding the Result</h2>
+<pre><code class="language-php">$result = BreachPHP::check('password123');
+
+$result->isBreached(); // bool
+$result->count(); // int
+$result->hash();
+$result->prefix();
+$result->suffix();</code></pre>
+<hr>
+<h2>Laravel Validation</h2>
+<pre><code class="language-php">use Illuminate\\Support\\Facades\\Validator;
+use ShamimStack\\BreachPHP\\Rules\\NotBreached;
+
+Validator::make($request->all(), [
+    'password' => [
+        'required',
+        'string',
+        'min:12',
+        new NotBreached(),
+    ],
+])->validate();</code></pre>
+<hr>
+<h2>Using Dependency Injection</h2>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Contracts\\PasswordCheckerInterface;
+
+final class RegistrationService
+{
+    public function __construct(
+        private readonly PasswordCheckerInterface $checker,
+    ) {}
+
+    public function validate(string $password): void
+    {
+        $result = $this->checker->check($password);
+
+        if ($result->isBreached()) {
+            // Reject password
+        }
+    }
+}</code></pre>
+<hr>
+<h2>What Happens Behind the Scenes?</h2>
+<ol><li>Generates the SHA-1 hash locally.</li>
+<li>Splits the hash into a five-character prefix and a suffix.</li>
+<li>Checks local storage (if enabled).</li>
+<li>Queries the configured provider if necessary.</li>
+<li>Parses the provider response.</li>
+<li>Stores the prefix locally (when configured).</li>
+<li>Returns an immutable result object.</li></ol>
+<p>At no point is the plaintext password transmitted to the provider.</p>`,
+
+        'configuration': `<h1>Configuration</h1>
+<p>BreachPHP is designed to be configurable without requiring code changes.</p>
+<pre><code class="language-bash">php artisan vendor:publish --tag=breachphp-config</code></pre>
+<hr>
+<h2>Default Configuration</h2>
+<pre><code class="language-php">return [
+    'provider' => 'hibp',
+    'storage' => 'database',
+    'cache' => 'array',
+    'timeout' => 10,
+    'connect_timeout' => 5,
+    'retries' => 3,
+    'retry_delay' => 250,
+    'store_prefixes' => true,
+    'queue' => [
+        'enabled' => false,
+        'connection' => env('QUEUE_CONNECTION'),
+    ],
+];</code></pre>
+<hr>
+<h2>Provider</h2>
+<table><thead><tr><th>Provider</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>hibp</code></td><td>Have I Been Pwned Pwned Passwords API</td></tr>
+</tbody></table>
+<hr>
+<h2>Storage Driver</h2>
+<table><thead><tr><th>Driver</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>database</code></td><td>Relational database (recommended)</td></tr>
+<tr><td><code>sqlite</code></td><td>SQLite database</td></tr>
+<tr><td><code>none</code></td><td>Disabled</td></tr>
+</tbody></table>
+<hr>
+<h2>Cache Driver</h2>
+<table><thead><tr><th>Driver</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>array</code></td><td>In-memory cache (development)</td></tr>
+<tr><td><code>redis</code></td><td>Redis cache</td></tr>
+<tr><td><code>psr16</code></td><td>Any PSR-16 implementation</td></tr>
+<tr><td><code>laravel</code></td><td>Laravel Cache facade</td></tr>
+<tr><td><code>none</code></td><td>Disabled</td></tr>
+</tbody></table>
+<hr>
+<h2>HTTP Configuration</h2>
+<table><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>timeout</code></td><td>Maximum request duration (seconds)</td></tr>
+<tr><td><code>connect_timeout</code></td><td>Maximum connection time (seconds)</td></tr>
+<tr><td><code>retries</code></td><td>Number of retry attempts</td></tr>
+<tr><td><code>retry_delay</code></td><td>Delay between retries (milliseconds)</td></tr>
+</tbody></table>
+<hr>
+<h2>Environment Variables</h2>
+<pre><code class="language-env">BREACH_PROVIDER=hibp
+BREACH_STORAGE=database
+BREACH_CACHE=redis
+BREACH_TIMEOUT=10
+BREACH_RETRIES=3</code></pre>
+<hr>
+<h2>Example Configurations</h2>
+<h3>Development</h3>
+<pre><code class="language-php">'storage' => 'sqlite',
+'cache' => 'array',
+'queue' => ['enabled' => false],</code></pre>
+<h3>Production</h3>
+<pre><code class="language-php">'storage' => 'database',
+'cache' => 'redis',
+'queue' => ['enabled' => true],</code></pre>`,
+
+        'usage': `<h1>Usage</h1>
+<p>This guide covers the public API of <strong>BreachPHP</strong>.</p>
+<hr>
+<h2>Basic Password Check</h2>
+<h3>Laravel</h3>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Facades\\BreachPHP;
+
+$result = BreachPHP::check('password123');
+
+if ($result->isBreached()) {
+    echo "Password has been breached.";
+}</code></pre>
+<h3>Pure PHP</h3>
+<pre><code class="language-php">$result = breach_check('password123');
+
+if ($result->isBreached()) {
+    echo "Password has been breached.";
+}</code></pre>
+<hr>
+<h2>Result Object</h2>
+<pre><code class="language-php">$result->isBreached();
+$result->count();
+$result->hash();
+$result->prefix();
+$result->suffix();</code></pre>
+<hr>
+<h2>Helper Functions</h2>
+<pre><code class="language-php">$result = breach_check('password123');
+if (breach_is_safe('password123')) { echo "Safe."; }
+if (breach_is_breached('password123')) { echo "Breached."; }</code></pre>
+<hr>
+<h2>Exception Handling</h2>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Exceptions\\ApiException;
+
+try {
+    $result = BreachPHP::check($password);
+} catch (ApiException $exception) {
+    // Provider unavailable
+}</code></pre>
+<hr>
+<h2>Best Practices</h2>
+<ul><li>Validate passwords during registration and password resets.</li>
+<li>Enable local storage in production.</li>
+<li>Use Redis or another persistent cache.</li>
+<li>Handle package-specific exceptions.</li>
+<li>Prefer dependency injection over facades.</li></ul>`,
+
+        'upgrade': `<h1>Upgrade Guide</h1>
+<p>This guide explains how to safely upgrade <strong>BreachPHP</strong> between releases.</p>
+<hr>
+<h2>Versioning Policy</h2>
+<p>BreachPHP follows <strong>Semantic Versioning (SemVer)</strong>.</p>
+<table><thead><tr><th>Version</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>PATCH</strong></td><td>Bug fixes and internal improvements.</td></tr>
+<tr><td><strong>MINOR</strong></td><td>New features with backward compatibility.</td></tr>
+<tr><td><strong>MAJOR</strong></td><td>Breaking changes or significant architectural improvements.</td></tr>
+</tbody></table>
+<hr>
+<h2>Update the Package</h2>
+<pre><code class="language-bash">composer update shamimstack/breach-php</code></pre>
+<hr>
+<h2>Clear Cached Files</h2>
+<pre><code class="language-bash">php artisan optimize:clear
+php artisan config:cache</code></pre>
+<hr>
+<h2>Publish Updated Resources</h2>
+<pre><code class="language-bash">php artisan vendor:publish --tag=breachphp-config --force
+php artisan vendor:publish --tag=breachphp-migrations --force
+php artisan migrate</code></pre>
+<hr>
+<h2>Verify the Installation</h2>
+<pre><code class="language-bash">php artisan breach:test
+php artisan breach:doctor</code></pre>
+<hr>
+<h2>Deployment Checklist</h2>
+<ul><li>Update Composer dependencies.</li>
+<li>Publish updated configuration (if required).</li>
+<li>Publish new migrations (if required).</li>
+<li>Run database migrations.</li>
+<li>Clear Laravel caches.</li>
+<li>Run <code>breach:test</code>.</li>
+<li>Run <code>breach:doctor</code>.</li>
+<li>Run your application test suite.</li></ul>`,
+
+        'architecture': `<h1>Architecture</h1>
+<p>BreachPHP follows <strong>Clean Architecture</strong>, <strong>SOLID</strong>, and <strong>PSR standards</strong>.</p>
+<hr>
+<h2>Design Principles</h2>
+<ul><li><strong>SOLID</strong> — Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion</li>
+<li><strong>DRY</strong> — No duplicated logic</li>
+<li><strong>KISS</strong> — Simple public API, complexity hidden internally</li>
+<li><strong>Composition</strong> — Prefer composition over inheritance</li>
+<li><strong>Immutability</strong> — DTOs and Value Objects are immutable</li></ul>
+<hr>
+<h2>High-Level Architecture</h2>
+<pre><code class="language-text">                 Application
+                       |
+           +-----------+-----------+
+           |                       |
+      Laravel               Pure PHP
+           |                       |
+     Service Provider         BreachPHP
+           |                       |
+     +-----+-----+          +-----+-----+
+     |           |          |           |
+  Provider   Storage     Provider   Storage
+     |           |          |           |
+    HIBP      Database     HIBP      Array</code></pre>
+<hr>
+<h2>Layer Responsibilities</h2>
+<h3>Application Layer</h3>
+<ul><li>Laravel Service Provider</li><li>Facade</li><li>Artisan Commands</li><li>Validation Rules</li></ul>
+<h3>Domain Layer</h3>
+<ul><li>PasswordChecker (Core Service)</li><li>ProviderInterface</li><li>StorageInterface</li><li>CacheInterface</li></ul>
+<h3>Infrastructure Layer</h3>
+<ul><li>HibpProvider</li><li>DatabaseStorage</li><li>SQLiteStorage</li><li>HttpClient</li></ul>
+<hr>
+<h2>Request Flow</h2>
+<ol><li>User calls <code>BreachPHP::check($password)</code></li>
+<li>PasswordChecker generates SHA-1 hash</li>
+<li>Checks cache for existing result</li>
+<li>Checks local storage for prefix</li>
+<li>Queries HIBP API if needed</li>
+<li>Stores result in local storage</li>
+<li>Caches result</li>
+<li>Returns immutable PasswordResult</li></ol>
+<hr>
+<h2>Dependency Rules</h2>
+<p><strong>Allowed:</strong> Application → Contracts → Infrastructure</p>
+<p><strong>Forbidden:</strong> Infrastructure → Application</p>
+<p>Infrastructure must never depend on business logic.</p>`,
+
+        'providers': `<h1>Providers</h1>
+<p>Providers retrieve breach data from external services.</p>
+<hr>
+<h2>Provider Architecture</h2>
+<p>Every provider implements <code>ProviderInterface</code>:</p>
+<pre><code class="language-php">interface ProviderInterface
+{
+    public function fetch(string $prefix): ProviderResponse;
+}</code></pre>
+<hr>
+<h2>Default Provider: HIBP</h2>
+<p>The default provider uses the <strong>Have I Been Pwned</strong> Pwned Passwords API with k-Anonymity.</p>
+<p>Only the first 5 characters of the SHA-1 hash are transmitted. The plaintext password is never sent.</p>
+<hr>
+<h2>Provider Response</h2>
+<pre><code class="language-text">Prefix: 5BAA6
+Suffixes:
+003D68EC5B6414BC093B9188734B9A45:3
+019B16E6B130C0C7C5F2A82D98A4E5F2:1
+...</code></pre>
+<hr>
+<h2>Custom Providers</h2>
+<p>To create a custom provider:</p>
+<ol><li>Implement <code>ProviderInterface</code></li>
+<li>Register in the service container</li>
+<li>Update configuration</li></ol>
+<hr>
+<h2>Best Practices</h2>
+<ul><li>Always implement <code>ProviderInterface</code></li>
+<li>Handle timeouts gracefully</li>
+<li>Log provider interactions</li>
+<li>Test with fake responses</li></ul>`,
+
+        'storage': `<h1>Storage</h1>
+<p>The Storage abstraction layer persists and retrieves breach data across multiple backends.</p>
+<hr>
+<h2>StorageInterface</h2>
+<pre><code class="language-php">interface StorageInterface
+{
+    public function hasPrefix(string $prefix): bool;
+    public function find(string $prefix, string $suffix): ?int;
+    public function store(PrefixResponse $response): void;
+    public function deletePrefix(string $prefix): void;
+    public function stats(): StorageStatistics;
+}</code></pre>
+<hr>
+<h2>Available Drivers</h2>
+<table><thead><tr><th>Driver</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>database</code></td><td>Relational database (recommended)</td></tr>
+<tr><td><code>sqlite</code></td><td>SQLite database</td></tr>
+<tr><td><code>none</code></td><td>Disabled</td></tr>
+</tbody></table>
+<hr>
+<h2>Lookup Flow</h2>
+<ol><li>Check if prefix exists in storage</li>
+<li>If found, return the suffix count</li>
+<li>If not found, query the provider</li>
+<li>Store the response for future lookups</li></ol>
+<hr>
+<h2>Best Practices</h2>
+<ul><li>Enable storage in production</li>
+<li>Run <code>breach:optimize</code> periodically</li>
+<li>Monitor storage statistics</li></ul>`,
+
+        'offline-engine': `<h1>Offline Engine</h1>
+<p>The Offline Engine builds a local breach database by synchronizing responses from the configured provider.</p>
+<hr>
+<h2>Why Use the Offline Engine?</h2>
+<ul><li>Reduces API requests</li><li>Enables offline lookups</li><li>Improves response times</li><li>Reduces external dependencies</li></ul>
+<hr>
+<h2>How It Works</h2>
+<ol><li>Password hash is generated locally</li>
+<li>Prefix is checked in local storage</li>
+<li>If not found, provider is queried</li>
+<li>Entire prefix response is stored locally</li>
+<li>Future lookups for the same prefix are instant</li></ol>
+<hr>
+<h2>Synchronization Strategies</h2>
+<h3>Automatic</h3>
+<p>Store prefix responses as passwords are checked.</p>
+<h3>Manual</h3>
+<pre><code class="language-bash">php artisan breach:sync</code></pre>
+<h3>Warmup</h3>
+<pre><code class="language-bash">php artisan breach:warmup</code></pre>
+<hr>
+<h2>Queue Support</h2>
+<p>Large synchronization tasks can run in the background:</p>
+<pre><code class="language-php">'queue' => [
+    'enabled' => true,
+],</code></pre>`,
+
+        'database': `<h1>Database</h1>
+<p>The database layer stores synchronized SHA-1 hash prefixes and suffixes.</p>
+<hr>
+<h2>Schema</h2>
+<h3>prefixes</h3>
+<table><thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>id</td><td>bigint</td><td>Primary key</td></tr>
+<tr><td>prefix</td><td>string(5)</td><td>SHA-1 prefix</td></tr>
+<tr><td>created_at</td><td>timestamp</td><td>Creation time</td></tr>
+<tr><td>updated_at</td><td>timestamp</td><td>Last update</td></tr>
+</tbody></table>
+<h3>suffixes</h3>
+<table><thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>id</td><td>bigint</td><td>Primary key</td></tr>
+<tr><td>prefix_id</td><td>bigint</td><td>Foreign key</td></tr>
+<tr><td>suffix</td><td>string(35)</td><td>SHA-1 suffix</td></tr>
+<tr><td>count</td><td>integer</td><td>Breach count</td></tr>
+</tbody></table>
+<hr>
+<h2>Migrations</h2>
+<pre><code class="language-bash">php artisan vendor:publish --tag=breachphp-migrations
+php artisan migrate</code></pre>
+<hr>
+<h2>Indexing Strategy</h2>
+<ul><li>Prefix column is indexed for fast lookups</li>
+<li>Suffix column is indexed for fast lookups</li>
+<li>Composite index on prefix_id + suffix</li></ul>`,
+
+        'validation': `<h1>Validation</h1>
+<p>BreachPHP integrates with Laravel's validation system.</p>
+<hr>
+<h2>NotBreached Rule</h2>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Rules\\NotBreached;
+
+$request->validate([
+    'password' => [
+        'required',
+        'string',
+        'min:12',
+        new NotBreached(),
+    ],
+]);</code></pre>
+<hr>
+<h2>Breached Rule</h2>
+<p>The opposite of NotBreached — fails if the password is NOT found in the breach database.</p>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Rules\\Breached;
+
+$request->validate([
+    'password' => [
+        'required',
+        new Breached(),
+    ],
+]);</code></pre>
+<hr>
+<h2>Custom Error Message</h2>
+<pre><code class="language-php">new NotBreached(message: 'The :attribute has appeared in a data breach.')</code></pre>
+<hr>
+<h2>Combining with Laravel Password Rules</h2>
+<pre><code class="language-php">use Illuminate\\Validation\\Rules\\Password;
+use ShamimStack\\BreachPHP\\Rules\\NotBreached;
+
+$request->validate([
+    'password' => [
+        'required',
+        Password::min(12)->mixedCase()->numbers()->symbols(),
+        new NotBreached(),
+    ],
+]);</code></pre>`,
+
+        'events': `<h1>Events</h1>
+<p>BreachPHP dispatches events for significant operations.</p>
+<hr>
+<h2>Available Events</h2>
+<table><thead><tr><th>Event</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>PasswordChecked</code></td><td>After every successful check</td></tr>
+<tr><td><code>PasswordBreached</code></td><td>Password found in breach database</td></tr>
+<tr><td><code>PasswordSafe</code></td><td>Password not found</td></tr>
+<tr><td><code>StorageHit</code></td><td>Resolved from local storage</td></tr>
+<tr><td><code>CacheHit</code></td><td>Resolved from cache</td></tr>
+<tr><td><code>ApiHit</code></td><td>Required remote provider</td></tr>
+<tr><td><code>PrefixSynced</code></td><td>Prefix synchronized successfully</td></tr>
+<tr><td><code>SyncFailed</code></td><td>Synchronization failed</td></tr>
+</tbody></table>
+<hr>
+<h2>Event Flow</h2>
+<pre><code class="language-text">Password Checked
+        |
+        v
+   Cache Hit? ----yes----> Return cached result
+        |
+       no
+        |
+        v
+  Storage Hit? ---yes----> Return stored result
+        |
+       no
+        |
+        v
+   API Hit? -----yes----> Query provider
+        |                       |
+       no                  Store prefix
+        |                       |
+        v                       v
+  Return result <───────────────┘</code></pre>`,
+
+        'api': `<h1>API Reference</h1>
+<p>The public API exposed by <strong>BreachPHP</strong>.</p>
+<hr>
+<h2>Main Entry Points</h2>
+<h3>Laravel Facade</h3>
+<pre><code class="language-php">use ShamimStack\\BreachPHP\\Facades\\BreachPHP;
+
+$result = BreachPHP::check('password123');</code></pre>
+<h3>Helper Function</h3>
+<pre><code class="language-php">$result = breach_check('password123');</code></pre>
+<hr>
+<h2>PasswordResult</h2>
+<table><thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>isBreached()</code></td><td><code>bool</code></td><td>Whether password exists in breach database</td></tr>
+<tr><td><code>count()</code></td><td><code>int</code></td><td>Number of times password appears in breaches</td></tr>
+<tr><td><code>hash()</code></td><td><code>string</code></td><td>SHA-1 hash generated locally</td></tr>
+<tr><td><code>prefix()</code></td><td><code>string</code></td><td>First five SHA-1 characters</td></tr>
+<tr><td><code>suffix()</code></td><td><code>string</code></td><td>Remaining SHA-1 characters</td></tr>
+<tr><td><code>provider()</code></td><td><code>string</code></td><td>Provider that handled the request</td></tr>
+<tr><td><code>source()</code></td><td><code>string</code></td><td>Lookup source (cache/storage/provider)</td></tr>
+</tbody></table>
+<hr>
+<h2>Helper Functions</h2>
+<pre><code class="language-php">breach_check(string $password): PasswordResult
+breach_is_safe(string $password): bool
+breach_is_breached(string $password): bool
+breach_create_checker(): PasswordChecker</code></pre>
+<hr>
+<h2>Contracts</h2>
+<table><thead><tr><th>Interface</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>PasswordCheckerInterface</code></td><td>Password checking service</td></tr>
+<tr><td><code>ProviderInterface</code></td><td>External breach providers</td></tr>
+<tr><td><code>StorageInterface</code></td><td>Local storage implementations</td></tr>
+<tr><td><code>CacheInterface</code></td><td>Cache implementations</td></tr>
+<tr><td><code>HashGeneratorInterface</code></td><td>SHA-1 generation</td></tr>
+<tr><td><code>ParserInterface</code></td><td>Provider response parsing</td></tr>
+</tbody></table>`,
+
+        'commands': `<h1>Commands</h1>
+<p>All 11 Artisan commands for maintenance and synchronization.</p>
+<hr>
+<h2>Available Commands</h2>
+<table><thead><tr><th>Command</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>breach:check</code></td><td>Check if a password has been breached</td></tr>
+<tr><td><code>breach:sync</code></td><td>Synchronize breach prefixes with provider</td></tr>
+<tr><td><code>breach:warmup</code></td><td>Pre-fetch common prefixes</td></tr>
+<tr><td><code>breach:test</code></td><td>Test package installation</td></tr>
+<tr><td><code>breach:doctor</code></td><td>Run diagnostics</td></tr>
+<tr><td><code>breach:health</code></td><td>Check system health</td></tr>
+<tr><td><code>breach:stats</code></td><td>View storage statistics</td></tr>
+<tr><td><code>breach:verify</code></td><td>Verify storage integrity</td></tr>
+<tr><td><code>breach:cache-clear</code></td><td>Clear breach cache</td></tr>
+<tr><td><code>breach:prune</code></td><td>Remove old synchronized data</td></tr>
+<tr><td><code>breach:optimize</code></td><td>Optimize storage indexes</td></tr>
+</tbody></table>
+<hr>
+<h2>Scheduling</h2>
+<pre><code class="language-php">// app/Console/Kernel.php
+$schedule->command('breach:sync')->daily();
+$schedule->command('breach:optimize')->weekly();</code></pre>`,
+
+        'faq': `<h1>FAQ</h1>
+<p>Frequently asked questions and troubleshooting.</p>
+<hr>
+<h2>General</h2>
+<h3>What is BreachPHP?</h3>
+<p>BreachPHP is a PHP package for detecting breached passwords using the HIBP k-Anonymity API.</p>
+<h3>Is the plaintext password ever transmitted?</h3>
+<p>No. Only the first 5 characters of the SHA-1 hash are sent to the API.</p>
+<hr>
+<h2>Installation</h3>
+<h3>Which PHP versions are supported?</h3>
+<p>PHP 8.4 and later.</p>
+<h3>Do I need Laravel?</h3>
+<p>No. BreachPHP works with any PHP application.</p>
+<hr>
+<h2>Performance</h2>
+<h3>How can I reduce API calls?</h3>
+<p>Enable local storage and caching. This builds a local breach database over time.</p>
+<hr>
+<h2>Security</h2>
+<h3>Is this production-ready?</h3>
+<p>Yes. BreachPHP is designed for production use with proper error handling, caching, and offline support.</p>`,
+
+        'development': `<h1>Development Guide</h1>
+<p>Workflow, coding standards, and contribution process.</p>
+<hr>
+<h2>Requirements</h2>
+<ul><li>PHP 8.4+</li><li>Composer</li><li>Laravel 13+ (for Laravel features)</li></ul>
+<hr>
+<h2>Installation</h2>
+<pre><code class="language-bash">git clone https://github.com/pkgmcp/breach-php.git
+cd breach-php
+composer install</code></pre>
+<hr>
+<h2>Available Scripts</h2>
+<pre><code class="language-bash">composer test          # Run all tests
+composer test:unit     # Unit tests only
+composer test:feature  # Feature tests only
+composer analyse       # PHPStan analysis
+composer format        # Laravel Pint formatting
+composer ci            # Full CI pipeline</code></pre>
+<hr>
+<h2>Coding Standards</h2>
+<ul><li>Follow PSR-12</li><li>Use Laravel Pint</li><li>PHPStan at maximum level</li></ul>
+<hr>
+<h2>Architecture Rules</h2>
+<ul><li>Business logic belongs in Services</li>
+<li>Commands only orchestrate services</li>
+<li>Depend on interfaces, not implementations</li>
+<li>Use constructor injection</li></ul>`,
+
+        'testing': `<h1>Testing</h1>
+<p>Test strategy, Pest, PHPStan, and mutation testing.</p>
+<hr>
+<h2>Testing Stack</h2>
+<table><thead><tr><th>Tool</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>Pest</td><td>Testing framework</td></tr>
+<tr><td>PHPUnit</td><td>Test runner</td></tr>
+<tr><td>Laravel Testbench</td><td>Laravel package testing</td></tr>
+<tr><td>Mockery</td><td>Test doubles</td></tr>
+<tr><td>PHPStan</td><td>Static analysis</td></tr>
+<tr><td>Infection</td><td>Mutation testing</td></tr>
+<tr><td>Laravel Pint</td><td>Code formatting</td></tr>
+</tbody></table>
+<hr>
+<h2>Test Structure</h2>
+<pre><code class="language-text">tests/
+├── Unit/
+├── Feature/
+├── Integration/
+├── Architecture/
+├── Fixtures/
+├── Helpers/
+└── Pest.php</code></pre>
+<hr>
+<h2>Running Tests</h2>
+<pre><code class="language-bash">composer test          # All tests
+composer test:unit     # Unit tests
+composer test:feature  # Feature tests
+composer analyse       # Static analysis
+composer format        # Code style</code></pre>
+<hr>
+<h2>Coverage Targets</h2>
+<table><thead><tr><th>Area</th><th>Target</th></tr></thead><tbody>
+<tr><td>Domain</td><td>100%</td></tr>
+<tr><td>Services</td><td>95%</td></tr>
+<tr><td>Storage</td><td>95%</td></tr>
+<tr><td>Providers</td><td>95%</td></tr>
+<tr><td>Commands</td><td>90%</td></tr>
+<tr><td>Overall</td><td>90%+</td></tr>
+</tbody></table>`,
+
+        'style-guide': `<h1>Style Guide</h1>
+<p>Coding, naming, and documentation standards.</p>
+<hr>
+<h2>General Principles</h2>
+<ul><li>Follow PSR-12 coding standard</li>
+<li>Use strict types</li>
+<li>Write self-documenting code</li></ul>
+<hr>
+<h2>Naming Conventions</h2>
+<table><thead><tr><th>Element</th><th>Convention</th><th>Example</th></tr></thead><tbody>
+<tr><td>Classes</td><td>PascalCase</td><td>PasswordChecker</td></tr>
+<tr><td>Methods</td><td>camelCase</td><td>checkPassword</td></tr>
+<tr><td>Variables</td><td>camelCase</td><td>$passwordResult</td></tr>
+<tr><td>Constants</td><td>UPPER_SNAKE_CASE</td><td>MAX_PASSWORD_LENGTH</td></tr>
+<tr><td>Interfaces</td><td>PascalCase + Interface</td><td>ProviderInterface</td></tr>
+<tr><td>Exceptions</td><td>PascalCase + Exception</td><td>ApiException</td></tr>
+</tbody></table>
+<hr>
+<h2>Class Design</h2>
+<ul><li>Prefer <code>final</code> classes</li>
+<li>Use <code>readonly</code> properties</li>
+<li>Use constructor promotion</li></ul>`,
+
+        'project-structure': `<h1>Project Structure</h1>
+<p>Official directory layout and responsibilities.</p>
+<hr>
+<h2>Root Structure</h2>
+<pre><code class="language-text">breach-php/
+├── .github/
+├── config/
+├── database/
+├── docs/
+├── src/
+├── stubs/
+├── tests/
+├── README.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── SUPPORT.md
+└── LICENSE.md</code></pre>
+<hr>
+<h2>Source Directory</h2>
+<pre><code class="language-text">src/
+├── Cache/          # Cache implementations
+├── Commands/       # Artisan commands
+├── Concerns/       # Reusable traits
+├── Config/         # Configuration objects
+├── Console/        # Console helpers
+├── Contracts/      # Interfaces
+├── DTO/            # Data transfer objects
+├── Enums/          # Enumerations
+├── Events/         # Event classes
+├── Exceptions/     # Exception classes
+├── Facades/        # Laravel facades
+├── Hash/           # Hash generation
+├── Http/           # HTTP communication
+├── Jobs/           # Queue jobs
+├── Models/         # Eloquent models
+├── Parsers/        # Response parsers
+├── Providers/      # Breach providers
+├── Results/        # Result objects
+├── Rules/          # Validation rules
+├── Services/       # Business logic
+├── Storage/        # Storage implementations
+├── Support/        # Utilities
+└── ValueObjects/   # Immutable objects</code></pre>`,
+
+        'release': `<h1>Release Process</h1>
+<p>SemVer, testing, and reproducible builds.</p>
+<hr>
+<h2>Versioning</h2>
+<table><thead><tr><th>Type</th><th>When</th><th>Example</th></tr></thead><tbody>
+<tr><td>PATCH</td><td>Bug fixes</td><td>1.0.0 → 1.0.1</td></tr>
+<tr><td>MINOR</td><td>New features</td><td>1.0.0 → 1.1.0</td></tr>
+<tr><td>MAJOR</td><td>Breaking changes</td><td>1.0.0 → 2.0.0</td></tr>
+</tbody></table>
+<hr>
+<h2>Release Checklist</h2>
+<ul><li>Update version in composer.json</li>
+<li>Update CHANGELOG.md</li>
+<li>Run full test suite</li>
+<li>Run static analysis</li>
+<li>Create Git tag</li>
+<li>Create GitHub release</li>
+<li>Publish to Packagist</li></ul>
+<hr>
+<h2>Git Tags</h2>
+<pre><code class="language-bash">git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0</code></pre>
+<hr>
+<h2>GitHub Release</h2>
+<pre><code class="language-bash">gh release create v1.0.0 --title "v1.0.0" --notes-file CHANGELOG.md</code></pre>`,
+
+        'roadmap': `<h1>Roadmap</h1>
+<p>Planned features, milestones, and future direction.</p>
+<hr>
+<h2>Version 1.0 — Initial Stable</h2>
+<ul><li>HIBP k-Anonymity support</li><li>Laravel 13 integration</li><li>Database & SQLite storage</li><li>PSR-16 cache support</li><li>11 Artisan commands</li><li>Queue support</li><li>Event system</li></ul>
+<hr>
+<h2>Version 1.1 — Enhanced Storage</h2>
+<ul><li>Redis storage driver</li><li>File storage driver</li><li>Storage optimization</li><li>Performance improvements</li></ul>
+<hr>
+<h2>Version 1.2 — Extended Providers</h2>
+<ul><li>Custom provider support</li><li>Multiple provider configuration</li><li>Provider health monitoring</li></ul>
+<hr>
+<h2>Version 2.0 — Enterprise</h2>
+<ul><li>Multi-tenant support</li><li>Advanced analytics</li><li>Webhook integrations</li><li>API rate limiting</li></ul>
+<hr>
+<h2>Version 3.0 — Enterprise Platform</h2>
+<ul><li>Admin dashboard</li><li>Team management</li><li>Audit logging</li><li>Compliance reporting</li></ul>`,
+
+        'getting-help': `<h1>Getting Help</h1>
+<p>How to get help, report issues, and request features.</p>
+<hr>
+<h2>Before Asking for Help</h2>
+<ul><li>Read the <a href="#installation">Installation</a> guide</li>
+<li>Check the <a href="#faq">FAQ</a></li>
+<li>Run <code>php artisan breach:doctor</code></li></ul>
+<hr>
+<h2>Reporting Bugs</h2>
+<ol><li>Search existing issues first</li>
+<li>Include your PHP version, Laravel version, and BreachPHP version</li>
+<li>Provide steps to reproduce</li>
+<li>Include error messages</li></ol>
+<hr>
+<h2>Security Issues</h2>
+<ul><li>Do <strong>not</strong> disclose publicly</li>
+<li>Follow the security reporting process in <code>SECURITY.md</code></li></ul>
+<hr>
+<h2>Contributing</h2>
+<ol><li>Read <code>CONTRIBUTING.md</code></li>
+<li>Read the <a href="#development">Development Guide</a></li>
+<li>Ensure all tests pass</li></ol>`,
+
+        'ai-rules': `<h1>AI Rules</h1>
+<p>Mandatory rules for AI assistants contributing to the BreachPHP codebase.</p>
+<hr>
+<h2>Core Principles</h2>
+<ul><li>SOLID</li><li>DRY</li><li>KISS</li><li>Clean Architecture</li><li>PSR Standards</li><li>Dependency Injection</li></ul>
+<hr>
+<h2>Architecture Rules</h2>
+<ul><li>Business logic belongs only in Services</li>
+<li>Commands only orchestrate services</li>
+<li>Facades only expose services</li>
+<li>Providers only register dependencies</li></ul>
+<hr>
+<h2>Security Rules</h2>
+<p><strong>Never:</strong></p>
+<ul><li>Transmit plaintext passwords</li><li>Log passwords</li><li>Store plaintext passwords</li><li>Expose secrets</li></ul>
+<p><strong>Always:</strong></p>
+<ul><li>Hash locally</li><li>Use HTTPS</li><li>Validate inputs</li></ul>
+<hr>
+<h2>Testing Rules</h2>
+<ul><li>Every new feature requires tests</li>
+<li>Mock HTTP, Cache, Storage</li>
+<li>Never rely on external services</li></ul>`,
+
+        'prd': `<h1>Product Requirements Document</h1>
+<p>BreachPHP — Enterprise-grade password breach detection for PHP.</p>
+<hr>
+<h2>Executive Summary</h2>
+<p>BreachPHP is a PHP package that detects whether passwords have appeared in known data breaches using the Have I Been Pwned k-Anonymity API.</p>
+<hr>
+<h2>Problem Statement</h2>
+<p>Users frequently reuse passwords across multiple services. When a password appears in a data breach, all accounts using that password are at risk.</p>
+<hr>
+<h2>Vision</h2>
+<p>Make password breach detection simple, secure, and accessible for every PHP application.</p>
+<hr>
+<h2>Objectives</h2>
+<ul><li>Provide simple API for breach detection</li>
+<li>Ensure plaintext passwords are never transmitted</li>
+<li>Support both Laravel and pure PHP</li>
+<li>Enable local storage for offline lookups</li>
+<li>Maintain high test coverage</li></ul>
+<hr>
+<h2>Functional Requirements</h2>
+<ul><li>Check passwords against HIBP API</li>
+<li>Store breach data locally</li>
+<li>Cache lookup results</li>
+<li>Provide Laravel validation rules</li>
+<li>Support queue-based synchronization</li></ul>
+<hr>
+<h2>Non-Functional Requirements</h2>
+<ul><li>PHP 8.4+ compatibility</li>
+<li>Laravel 13+ integration</li>
+<li>90%+ test coverage</li>
+<li>PSR-12 coding standard</li>
+<li>Semantic versioning</li></ul>`
+    };
+
+    // Theme management
+    function initTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    }
+
+    function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    // Sidebar management
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('open');
+    }
+
+    function toggleSection(btn) {
+        const items = btn.nextElementSibling;
+        const icon = btn.querySelector('svg');
+        items.classList.toggle('hidden');
+        icon.style.transform = items.classList.contains('hidden') ? 'rotate(-90deg)' : '';
+    }
+
+    // Content rendering
+    function renderDoc(id) {
+        const content = docs[id] || docs['index'];
+        document.getElementById('docContent').innerHTML = content;
+        document.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Search functionality
+    function searchDocs(query) {
+        if (!query.trim()) {
+            document.getElementById('searchResults').classList.add('hidden');
+            return;
+        }
+        const results = [];
+        const q = query.toLowerCase();
+        for (const [id, content] of Object.entries(docs)) {
+            const text = content.replace(/<[^>]*>/g, '').toLowerCase();
+            if (text.includes(q)) {
+                const snippet = text.substring(text.indexOf(q) - 50, text.indexOf(q) + 100).trim();
+                results.push({ id, snippet: '...' + snippet + '...' });
+            }
+        }
+        const list = document.getElementById('searchResultsList');
+        list.innerHTML = results.length ? results.map(r => `<a href="#${r.id}" onclick="renderDoc('${r.id}'); clearSearch();" class="block p-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm" style="color: var(--text-secondary);">${r.snippet}</a>`).join('') : '<p class="text-sm" style="color: var(--text-secondary);">No results found.</p>';
+        document.getElementById('searchResults').classList.remove('hidden');
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchResults').classList.add('hidden');
+    }
+
+    // Active section tracking
+    function updateActiveLink() {
+        const sections = document.querySelectorAll('.content-section h1[id]');
+        let current = '';
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 100) current = section.id;
+        });
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    }
+
+    // Initialize
+    initTheme();
+    renderDoc('index');
+    document.getElementById('searchInput').addEventListener('input', e => searchDocs(e.target.value));
+    window.addEventListener('scroll', updateActiveLink);
+
+    // Handle hash navigation
+    if (window.location.hash) {
+        const id = window.location.hash.slice(1);
+        if (docs[id]) renderDoc(id);
+    }
+    </script>
+</body>
+</html>
